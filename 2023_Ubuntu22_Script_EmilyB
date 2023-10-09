@@ -1,0 +1,61 @@
+#!/bin/bash
+
+#Remove prohibited files
+sudo apt remove ophcrack
+sudo apt remove wireshark -y
+sudo about autoremove
+sudo apt remove nmap
+sudo apt remove nessus
+sudo apt remove kismet
+sudo apt remove metasploit
+sudo apt remove aircrack-ng
+sudo apt remove openvas
+sudo apt remove sqlmap
+sudo apt remove zenmap
+sudo apt remove rainbow-crack
+sudo apt remove ccleaner
+
+# Enable firewall
+
+sudo apt install ufw
+sudo ufw status verbose
+sudo ufw default deny incoming
+sudo ufw enable
+sudo ufw sudo ufw allow ssh
+sudo ufw allow 4422/tcp
+enable    #firewall on
+sudo ufw deny 23    #block Telnet
+sudo ufw deny 515   #block printer port
+sudo ufw status >> firewall-status.txt
+sudo ufw allow log 22/tcp
+sudo ufw allow 139
+sudo ufw allow 445
+sudo ufw allow 137
+sudo ufw allow 138
+
+#start Open SSH at boot
+sudo update-rc.d ssh enable
+/etc/rc3.d/
+
+
+#deletes all media files
+
+find /home -name '*.mp3' -type f -delete
+    	find /home -name '*.mov' -type f -delete
+    	find /home -name '*.mp4' -type f -delete
+    	find /home -name '*.avi' -type f -delete
+    	find /home -name '*.mpg' -type f -delete
+    	find /home -name '*.mpeg' -type f -delete
+    	find /home -name '*.flac' -type f -delete
+    	find /home -name '*.m4a' -type f -delete
+    	find /home -name '*.flv' -type f -delete
+    	find /home -name '*.ogg' -type f -delete
+    	find /home -name '*.gif' -type f -delete
+    	find /home -name '*.png' -type f -delete
+    	find /home -name '*.jpg' -type f -delete
+ 
+#updates system
+ sudo apt update
+ sudo apt upgrade
+ sudo reboot
+
