@@ -1,0 +1,31 @@
+#!/bin/bash
+
+#turns on syscookies
+sudo cat /proc/sys/net/ipv4/tcp_syscookies
+#0 means disabled, 1 mean enabled
+sudo echo 1 > /proc/sys/net/ipv4/tcp_syscookies
+sudo gedit /etc/sysctl.d/10-network-security.conf
+#change it to 1
+
+#turn on login counter
+sudo gedit /etc/pam.d/common-account
+#add ‘account	required				pam-tally2.so’
+
+#password configurations 
+sudo gedit /etc/pam.d/common-password
+#change minlen to equal 10
+#change remb to 5
+
+#lockout threshold
+sudo gedit /etc/pam.d/common-auth
+#change deny to equal 5
+#change unlock time to equal 1200
+
+
+#install random crap
+sudo apt install net-tools
+sudo apt install sl
+
+#various settings
+sudo gedit /etc/pam.d/other
+#change random crap tbh
