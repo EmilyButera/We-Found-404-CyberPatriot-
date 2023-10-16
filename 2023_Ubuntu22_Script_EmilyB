@@ -15,6 +15,12 @@ sudo apt remove zenmap
 sudo apt remove rainbow-crack
 sudo apt remove ccleaner
 
+#Check for prohibeted software, as well as stops prohibited software from running.
+systemctl list-units --type=service --state=active
+sudo systemctl stop nginx 
+sudo systemcrl disable nginx
+
+
 # Enable firewall
 
 sudo apt install ufw
