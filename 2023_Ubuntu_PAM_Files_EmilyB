@@ -29,3 +29,7 @@ sudo apt install sl
 #various settings
 sudo gedit /etc/pam.d/other
 #change random crap tbh
+
+#disable root loggin
+sudo gedit /etc/ssh/sshd_config
+#change PermitRootLogin yes to PermitRootLogin no
