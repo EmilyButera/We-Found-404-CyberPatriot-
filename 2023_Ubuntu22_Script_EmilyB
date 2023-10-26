@@ -3,7 +3,7 @@
 #Remove prohibited files
 sudo apt remove ophcrack
 sudo apt remove wireshark -y
-sudo about autoremove
+sudo apt-get autoremove -y
 sudo apt remove nmap
 sudo apt remove nessus
 sudo apt remove kismet
@@ -23,21 +23,37 @@ sudo systemcrl disable nginx
 
 # Enable firewall
 
+#installs firewall
 sudo apt install ufw
+
+#gives firewall status
 sudo ufw status verbose
+sudo ufw status >> firewall-status.txt
+
+#configures settings
 sudo ufw default deny incoming
 sudo ufw enable
+
+#allows services
 sudo ufw sudo ufw allow ssh
 sudo ufw allow 4422/tcp
+
+#denies specific ports
 enable    #firewall on
 sudo ufw deny 23    #block Telnet
 sudo ufw deny 515   #block printer port
-sudo ufw status >> firewall-status.txt
 sudo ufw allow log 22/tcp
 sudo ufw allow 139
 sudo ufw allow 445
 sudo ufw allow 137
 sudo ufw allow 138
+sudo ufw deny 21
+sudo ufw deny cups
+
+#disables these two services
+sudo apt-get purge -y cups
+sudo apt-get purge -y bluetooth
+
 
 #start Open SSH at boot
 sudo update-rc.d ssh enable
