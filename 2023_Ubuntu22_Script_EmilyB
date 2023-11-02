@@ -15,6 +15,15 @@ sudo apt remove zenmap
 sudo apt remove rainbow-crack
 sudo apt remove ccleaner
 
+#finding and removing backdoors
+wget http://downloads.sourceforge.net/project/rkhunter/rkhunter/1.4.2/rkhunter-1.4.2.tar.gz
+tar xfz rkhunter-1.4.2.tar.gz
+sudo ./rkhunter-1.4.2/installer.sh --layout default --install
+sudo ./rkhunter-1.4.2/installer.sh --layout default --install
+sudo /usr/local/bin/rkhunter --update --propupd
+sudo /usr/local/bin/rkhunter --check
+
+
 #Check for prohibeted software, as well as stops prohibited software from running.
 systemctl list-units --type=service --state=active
 sudo systemctl stop nginx 
@@ -58,6 +67,13 @@ sudo apt-get purge -y bluetooth
 #start Open SSH at boot
 sudo update-rc.d ssh enable
 /etc/rc3.d/
+
+#stop services
+sudo systemctl stop httpd
+sudo service apache2 stop
+systemctl list-units --type=service --state=active
+sudo systemctl stop nginx 
+sudo systemcrl disable nginx
 
 
 #deletes all media files
