@@ -37,6 +37,31 @@ read dnsYN
 echo Does this machine allow media files?
 read mediaFilesYN
 
+#Fun stuff (SHOULD WORK ON BOTH DEBIAN AND UBUNTU)
+clear
+unalias -a
+printTime "All alias have been removed."
+
+clear
+usermod -L root
+printTime "Root account has been locked. Use 'usermod -U root' to unlock it."
+
+clear
+chmod 640 .bash_history
+printTime "Bash history file permissions set."
+
+clear
+chmod 604 /etc/shadow
+printTime "Read/Write permissions on shadow have been set."
+
+clear
+printTime "Check for any user folders that do not belong to any users in /home/."
+ls -a /home/ >> ~/Desktop/Script.log
+
+clear
+printTime "Check for any files for users that should not be administrators in /etc/sudoers.d."
+ls -a /etc/sudoers.d >> ~/Desktop/Script.log
+
 #finding and removing backdoors
 wget http://downloads.sourceforge.net/project/rkhunter/rkhunter/1.4.2/rkhunter-1.4.2.tar.gz
 tar xfz rkhunter-1.4.2.tar.gz
