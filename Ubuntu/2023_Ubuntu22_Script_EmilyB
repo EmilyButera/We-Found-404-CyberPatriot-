@@ -15,6 +15,28 @@ sudo apt remove zenmap
 sudo apt remove rainbow-crack
 sudo apt remove ccleaner
 
+#Determines critical services
+echo Does this machine need Samba?
+read sambaYN
+echo Does this machine need FTP?
+read ftpYN
+echo Does this machine need SSH?
+read sshYN
+echo Does this machine need Telnet?
+read telnetYN
+echo Does this machine need Mail?
+read mailYN
+echo Does this machine need Printing?
+read printYN
+echo Does this machine need MySQL?
+read dbYN
+echo Will this machine be a Web Server?
+read httpYN
+echo Does this machine need DNS?
+read dnsYN
+echo Does this machine allow media files?
+read mediaFilesYN
+
 #finding and removing backdoors
 wget http://downloads.sourceforge.net/project/rkhunter/rkhunter/1.4.2/rkhunter-1.4.2.tar.gz
 tar xfz rkhunter-1.4.2.tar.gz
