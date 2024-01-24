@@ -1,0 +1,87 @@
+#!/bin/bash
+
+# Set variables for frequently used values
+GRUB_CFG=/boot/grub/grub.cfg
+CRONTAB=/etc/crontab
+CRON_HOURLY=/etc/cron.hourly
+CRON_DAILY=/etc/cron.daily
+CRON_WEEKLY=/etc/cron.weekly
+CRON_MONTHLY=/etc/cron.monthly
+CRON_D=/etc/cron.d
+PASSWD=/etc/passwd
+SHADOW=/etc/shadow
+GROUP=/etc/group
+GSHADOW=/etc/gshadow
+PASSWD_BKP=/etc/passwd-
+SHADOW_BKP=/etc/shadow-
+GROUP_BKP=/etc/group-
+GSHADOW_BKP=/etc/gshadow-
+MOTD=/etc/motd
+ISSUE=/etc/issue
+ISSUE_NET=/etc/issue.net
+HOSTS_ALLOW=/etc/hosts.allow
+HOSTS_DENY=/etc/hosts.deny
+
+# Set permissions for GRUB configuration file
+sudo chown root:root "$GRUB_CFG"
+sudo chmod 700 "$GRUB_CFG"
+
+# Set permissions for crontab and related files
+sudo chown root:root "$CRONTAB"
+sudo chmod og-rwx "$CRONTAB"
+sudo chown root:root "$CRON_HOURLY"
+sudo chmod og-rwx "$CRON_HOURLY"
+sudo chown root:root "$CRON_DAILY"
+sudo chmod og-rwx "$CRON_DAILY"
+sudo chown root:root "$CRON_WEEKLY"
+sudo chmod og-rwx "$CRON_WEEKLY"
+sudo chown root:root "$CRON_MONTHLY"
+sudo chmod og-rwx "$CRON_MONTHLY"
+sudo chown root:root "$CRON_D"
+sudo chmod og-rwx "$CRON_D"
+
+# Remove cron and at deny files
+sudo rm /etc/cron.deny
+sudo rm /etc/at.deny
+
+# Create and set permissions for cron and at allow files
+sudo touch /etc/cron.allow
+sudo touch /etc/at.allow
+sudo chmod og-rwx /etc/cron.allow
+sudo chmod og-rwx /etc/at.allow
+sudo chown root:root /etc/cron.allow
+sudo chown root:root /etc/at.allow
+
+# Set permissions for system files
+sudo chown root:root "$PASSWD"
+sudo chmod 700 "$PASSWD"
+sudo chown root:shadow "$SHADOW"
+sudo chmod o-rwx,g-wx "$SHADOW"
+sudo chown root:root "$GROUP"
+sudo chmod 700 "$GROUP"
+sudo chown root:shadow "$GSHADOW"
+sudo chmod o-rwx,g-rw "$GSHADOW"
+sudo chown root:root "$PASSWD_BKP"
+sudo chmod u-x,go-wx "$PASSWD_BKP"
+sudo chown root:root "$SHADOW_BKP"
+sudo chown root:shadow "$SHADOW_BKP"
+sudo chmod o-rwx,g-rw "$SHADOW_BKP"
+sudo chown root:root "$GROUP_BKP"
+sudo chmod u-x,go-wx "$GROUP_BKP"
+sudo chown root:shadow "$GSHADOW_BKP"
+sudo chown root:shadow /etc/gshadow-
+
+# Set permissions for system files related to login
+sudo chmod o-rwx,g-rw /etc/gshadow-
+sudo chmod u-x,go-wx /etc/passwd-
+sudo chmod u-x,go-wx /etc/shadow-
+
+# Set permissions for system files related to networking
+sudo chmod 700 "$MOTD"
+sudo chmod 700 "$ISSUE"
+sudo chmod 700 "$ISSUE_NET"
+sudo chmod 700 "$HOSTS_ALLOW"
+sudo chmod 700 "$HOSTS_DENY"
+
+# Exit script with success status
+exit 0
