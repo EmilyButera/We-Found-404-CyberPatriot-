@@ -1,0 +1,107 @@
+#!/bin/bash
+
+# Update system packages
+echo "Updating system packages..."
+sudo apt-get update -y
+sudo apt-get upgrade -y
+
+# Configure SSHD
+echo "Configuring SSHD..."
+sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin no/' /etc/ssh/sshd_config
+sudo sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/' /etc/ssh/sshd_config
+sudo sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
+sudo systemctl restart sshd
+
+# Configure firewall
+echo "Configuring firewall..."
+sudo apt-get install ufw -y
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+sudo ufw allow ssh
+sudo ufw allow http
+sudo ufw allow https
+sudo ufw enable
+
+# Configure AppArmor
+echo "Configuring AppArmor..."
+sudo apt-get install apparmor -y
+sudo systemctl enable apparmor
+sudo systemctl start apparmor
+
+# Configure SELinux
+echo "Configuring SELinux..."
+sudo apt-get install selinux -y
+sudo systemctl enable selinux
+sudo systemctl start selinux
+sudo setenforce 1
+
+# Configure auditd
+echo "Configuring auditd..."
+sudo apt-get install auditd -y
+sudo systemctl enable auditd
+sudo systemctl start auditd
+
+# Configure log rotation
+echo "Configuring log rotation..."
+sudo apt-get install logrotate -y
+sudo systemctl enable logrotate
+sudo systemctl start logrotate
+
+# Configure permission settings
+echo "Configuring permission settings..."
+sudo chmod 600 /etc/passwd
+sudo chmod 600 /etc/shadow
+sudo chmod 600 /etc/group
+sudo chmod 600 /etc/gshadow
+sudo chmod 644 /etc/passwd-
+sudo chmod 644 /etc/shadow-
+sudo chmod 644 /etc/group-
+sudo chmod 644 /etc/gshadow-
+sudo chmod 700 /root
+sudo chmod 750 /home/*
+sudo chmod 755 /usr/local/bin
+sudo chmod 755 /opt
+sudo chmod 755 /srv
+sudo chmod 755 /var/www
+sudo chmod 755 /var/log
+sudo chmod 755 /var/tmp
+sudo chmod 755 /tmp
+
+# Configure PAM files
+echo "Configuring PAM files..."
+sudo sed -i 's/#auth required pam_tally2.so onerr=fail audit deny=5 unlock_time=600/auth required pam_tally2.so onerr=fail audit deny=5 unlock_time=600/' /etc/pam.d/common-auth
+sudo sed -i 's/#auth required pam_tally2.so onerr=succeed/auth required pam_tally2.so onerr=succeed/' /etc/pam.d/common-session
+sudo sed -i 's/#auth required pam_tally2.so onerr=fail audit deny=5 unlock_time=600/auth required pam_tally2.so onerr=fail audit deny=5 unlock_time=600/' /etc/pam.d/login
+sudo sed -i 's/#auth required pam_tally2.so onerr=fail audit deny=5 unlock_time=600/auth required pam_tally2.so onerr=fail audit deny=5 unlock_time=600/' /etc/pam.d/sshd
+
+# Install and configure rkhunter
+echo "Installing and configuring rkhunter..."
+sudo apt-get install rkhunter -y
+sudo systemctl enable rkhunter
+sudo systemctl start rkhunter
+
+# Install and configure chkrootkit
+echo "Installing and configuring chkrootkit..."
+sudo apt-get install chkrootkit -y
+sudo systemctl enable chkrootkit
+sudo systemctl start chkrootkit
+
+# Install and configure ClamAV
+echo "Installing and configuring ClamAV..."
+sudo apt-get install clamav clamav-daemon -y
+sudo systemctl enable clamav-daemon
+sudo systemctl start clamav-daemon
+sudo freshclam
+
+# Install and configure Tripwire
+echo "Installing and configuring Tripwire..."
+sudo apt-get install tripwire -y
+sudo systemctl enable tripwire
+sudo systemctl start tripwire
+sudo tripwire --init
+
+# Install and configure OSSEC
+echo "Installing and configuring OSSEC..."
+sudo apt-get install ossec-hids -y
+sudo systemctl enable ossec-hids
+sudo systemctl start ossec-h
