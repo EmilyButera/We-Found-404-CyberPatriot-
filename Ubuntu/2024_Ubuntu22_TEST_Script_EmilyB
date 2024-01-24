@@ -20,6 +20,18 @@ read dnsYN
 echo Does this machine allow media files?
 read mediaFilesYN
 
+#Installs anti-malware
+sudo apt-get install -y clamav clamav-daemon rkhunter auditd aide aide-common unattended-upgrades thunderbird tree apparmor apparmor-utils apparmor-profiles ntp tcpd iptables rsyslog sshguard
+sudo apt-get upgrade -y
+sudo apt-get autoremove -y
+sudo apt-get autoclean -y
+
+cd //usr/local/src
+sudo wget http://www.rfxn.com/downloads/maldetect-current.tar.gz
+sudo tar -xzf maldetect-current.tar.gz
+cd maldetect-*
+sudo sh ./install.sh
+
 #Fun stuff (SHOULD WORK ON BOTH DEBIAN AND UBUNTU)
 clear
 unalias -a
