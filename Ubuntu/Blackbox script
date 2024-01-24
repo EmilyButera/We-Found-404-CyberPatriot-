@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# Update package lists
+sudo apt-get update -y
+
+# Upgrade all installed packages
+sudo apt-get upgrade -y
+
+# Install and configure fail2ban
+sudo apt-get install fail2ban -y
+sudo systemctl enable fail2ban
+sudo systemctl start fail2ban
+
+# Install and configure unattended-upgrades
+sudo apt-get install unattended-upgrades -y
+sudo dpkg-reconfigure unattended-upgrades
+
+# Set strong root password
+sudo passwd root
+
+# Disable remote login for root
+sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin no/' /etc/ssh/sshd_config
+sudo systemctl restart ssh
+
+# Install and configure ufw firewall
+sudo apt-get install ufw -y
+sudo systemctl enable ufw
+sudo systemctl start ufw
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+sudo ufw allow ssh
+sudo ufw allow http
+sudo ufw allow https
