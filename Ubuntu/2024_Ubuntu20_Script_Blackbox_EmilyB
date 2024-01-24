@@ -1,0 +1,168 @@
+#!/bin/bash
+
+# Update system packages
+echo "Updating system packages..."
+sudo apt-get update -y
+sudo apt-get upgrade -y
+
+# Install and configure fail2ban
+echo "Installing and configuring fail2ban..."
+sudo apt-get install fail2ban -y
+sudo systemctl enable fail2ban
+sudo systemctl start fail2ban
+
+# Configure SSHD
+echo "Configuring SSHD..."
+sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin no/' /etc/ssh/sshd_config
+sudo sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/' /etc/ssh/sshd_config
+sudo sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
+sudo systemctl restart sshd
+
+# Configure firewall
+echo "Configuring firewall..."
+sudo apt-get install ufw -y
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+sudo ufw allow ssh
+sudo ufw allow http
+sudo ufw allow https
+sudo ufw enable
+
+# Install and configure AppArmor
+echo "Installing and configuring AppArmor..."
+sudo apt-get install apparmor -y
+sudo systemctl enable apparmor
+sudo systemctl start apparmor
+
+# Install and configure SELinux
+echo "Installing and configuring SELinux..."
+sudo apt-get install selinux -y
+sudo systemctl enable selinux
+sudo systemctl start selinux
+sudo setenforce 1
+
+# Install and configure auditd
+echo "Installing and configuring auditd..."
+sudo apt-get install auditd -y
+sudo systemctl enable auditd
+sudo systemctl start auditd
+
+# Configure log rotation
+echo "Configuring log rotation..."
+sudo apt-get install logrotate -y
+sudo systemctl enable logrotate
+sudo systemctl start logrotate
+
+# Install and configure rkhunter
+echo "Installing and configuring rkhunter..."
+sudo apt-get install rkhunter -y
+sudo systemctl enable rkhunter
+sudo systemctl start rkhunter
+
+# Install and configure chkrootkit
+echo "Installing and configuring chkrootkit..."
+sudo apt-get install chkrootkit -y
+sudo systemctl enable chkrootkit
+sudo systemctl start chkrootkit
+
+# Install and configure ClamAV
+echo "Installing and configuring ClamAV..."
+sudo apt-get install clamav clamav-daemon -y
+sudo systemctl enable clamav-daemon
+sudo systemctl start clamav-daemon
+sudo freshclam
+
+# Install and configure Tripwire
+echo "Installing and configuring Tripwire..."
+sudo apt-get install tripwire -y
+sudo systemctl enable tripwire
+sudo systemctl start tripwire
+sudo tripwire --init
+
+# Install and configure OSSEC
+echo "Installing and configuring OSSEC..."
+sudo apt-get install ossec-hids -y
+sudo systemctl enable ossec-hids
+sudo systemctl start ossec-hids
+
+# Install and configure Snort
+echo "Installing and configuring Snort..."
+sudo apt-get install snort -y
+sudo systemctl enable snort
+sudo systemctl start snort
+
+# Install and configure Suricata
+echo "Installing and configuring Suricata..."
+sudo apt-get install suricata -y
+sudo systemctl enable suricata
+sudo systemctl start suricata
+
+# Install and configure Wireshark
+echo "Installing and configuring Wireshark..."
+sudo apt-get install wireshark -y
+sudo dpkg-reconfigure wireshark-common
+sudo usermod -a -G wireshark $USER
+
+# Install and configure Nmap
+echo "Installing and configuring Nmap..."
+sudo apt-get install nmap -y
+
+# Install and configure Metasploit
+echo "Installing and configuring Metasploit..."
+sudo apt-get install metasploit-framework -y
+
+# Install and configure Nessus
+echo "Installing and configuring Nessus..."
+sudo apt-get install nessus -y
+sudo systemctl enable nessusd
+sudo systemctl start nessusd
+
+# Install and configure OpenVAS
+echo "Installing and configuring OpenVAS..."
+sudo apt-get install openvas -y
+sudo systemctl enable openvas-manager
+sudo systemctl start openvas-manager
+sudo systemctl enable openvas-scanner
+sudo systemctl start openvas-scanner
+sudo openvas-setup
+
+# Install and configure Lynis
+echo "Installing and configuring Lynis..."
+sudo apt-get install lynis -y
+sudo systemctl enable lynis
+sudo systemctl start lynis
+
+# Install and configure Spacewalk
+echo "Installing and configuring Spacewalk..."
+sudo apt-get install spacewalk-* -y
+sudo systemctl enable spacewalk-apache
+sudo systemctl start spacewalk-apache
+sudo systemctl enable spacewalk-rhn-satellite
+sudo systemctl start spacewalk-rhn-satellite
+sudo systemctl enable spacewalk-iso-builder
+sudo systemctl start spacewalk-iso-builder
+sudo systemctl enable spacewalk-database
+sudo systemctl start spacewalk-database
+sudo systemctl enable spacewalk-service
+sudo systemctl start spacewalk-service
+
+# Install and configure Elasticsearch
+echo "Installing and configuring Elasticsearch..."
+sudo apt-get install elasticsearch -y
+sudo systemctl enable elasticsearch
+sudo systemctl start elasticsearch
+
+# Install and configure Logstash
+echo "Installing and configuring Logstash..."
+sudo apt-get install logstash -y
+sudo systemctl enable logstash
+sudo systemctl start logstash
+
+# Install and configure Kibana
+echo "Installing and configuring Kibana..."
+sudo apt-get install kibana -y
+sudo systemctl enable kibana
+sudo systemctl start kibana
+
+# Install and configure Beats
+echo "Installing and config
