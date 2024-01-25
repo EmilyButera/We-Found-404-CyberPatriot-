@@ -1,0 +1,135 @@
+#!/bin/bash
+
+# Security Script for Ubuntu
+# Improved version
+
+# Check if running as root
+if [ "$(id -u)" -ne 0 ]; then
+  echo "You must be root to run this script."
+  exit 1
+fi
+
+# Disable unnecessary filesystems
+rmmod cramfs freevxfs jffs2 hfs hfsplus udf
+
+# Check if autofs is enabled, if not, enable it
+if ! systemctl is-enabled autofs; then
+  systemctl enable autofs
+fi
+
+# Enable intrusion detection
+aideinit
+
+# Configure common-auth
+if ! grep -q "pam_tally2.so" /etc/pam.d/common-auth; then
+  sed -i '1 s/^/auth optional pam_tally2.so file=/var/log/tallylog deny=5 even_deny_root unlock_time=900 onerr=fail audit even_deny_root_account silent\n/' /etc/pam.d/common-auth
+fi
+
+# Enable auditing
+auditctl -e 1
+
+# Configure sysctl.conf
+if ! grep -q "net.ipv4.conf.default.rp_filter" /etc/sysctl.conf; then
+  cat >> /etc/sysctl.conf <<EOL
+# ip spoofing protection
+net.ipv4.conf.default.rp_filter = 1
+net.ipv4.conf.all.rp_filter = 1
+
+# block syn attacks
+net.ipv4.tcp_syncookies = 1
+net.ipv4.tcp_max_syn_backlog = 2048
+net.ipv4.tcp_synack_retries = 2
+net.ipv4.tcp_syn_retries = 5
+
+# control ip packet forwarding
+net.ipv4.ip_forward = 0
+
+# ignore icmp redirects
+net.ipv4.conf.all.accept_redirects = 0
+net.ipv6.conf.all.accept_redirects = 0
+net.ipv4.conf.default.accept_redirects = 0
+net.ipv6.conf.default.accept_redirects = 0
+
+# ignore send redirects
+net.ipv4.conf.all.send_redirects = 0
+net.ipv4.conf.default.send_redirects = 0
+
+# disable source packet routing
+net.ipv4.conf.all.accept_source_route = 0
+net.ipv6.conf.all.accept_source_route = 0
+net.ipv4.conf.default.accept_source_route = 0
+net.ipv6.conf.default.accept_source_route = 0
+
+# log martians
+net.ipv4.conf.all.log_martians = 1
+net.ipv4.icmp_ignore_bogus_error_responses = 1
+
+# ignore icmp broadcast requests
+net.ipv4.icmp_echo_ignore_broadcasts = 1
+
+# ignore directed pings
+net.ipv4.icmp_echo_ignore_all = 1
+
+# disable ipv6
+net.ipv6.conf.all.disable_ipv6 = 1
+net.ipv6.conf.default.disable_ipv6 = 1
+net.ipv6.conf.lo.disable_ipv6 = 1
+
+# deny redirects
+net.ipv4.conf.all.secure_redirects = 0
+
+# log packets with impossible addresses to kernel log
+net.ipv4.conf.default.secure_redirects = 0
+
+# ipv6 configurations
+net.ipv6.conf.default.router_solicitations = 0
+net.ipv6.conf.default.accept_ra_rtr_pref = 0
+net.ipv6.conf.default.accept_ra_pinfo = 0
+net.ipv6.conf.default.accept_ra_defrtr = 0
+net.ipv6.conf.default.autoconf = 0
+net.ipv6.conf.default.dad_transmits = 0
+net.ipv6.conf.default.max_addresses = 1
+net.ipv4.conf.all.send redirects = 0
+net.ipv4.conf.all.accept redirects = 0
+net.ipv4.conf.all.secure redirects = 0
+net.ipv4.conf.all.log martians = 1
+net.ipv4.conf.all.rp filter = 1
+net.ipv6.conf.all.accept ra = 0
+net.ipv6.conf.default.accept_ra = 0
+net.ipv6.conf.all.accept redirects = 0
+kernel.randomize_va_space = 2
+EOL
+fi
+
+# Configure sysctl settings
+sysctl -p
+
+# Disable unnecessary services
+systemctl disable avahi-daemon cups isc-dhcp-server isc-dhcp-server6 slapd nfs-server rpcbind bind9 vsftpd apache2 dovecot smbd squid snmpd rsync nis
+
+# Configure ip spoofing
+if ! grep -q "order bind,hosts" /etc/host.conf; then
+  echo "order bind,hosts" >> /etc/host.conf
+  echo "nospoof on" >> /etc/host.conf
+fi
+
+# Restrict core dumps
+if ! grep -q "\* hard core" /etc/security/limits.conf; then
+  echo "\* hard core" >> /etc/security/limits.conf
+fi
+
+# Configure sysctl to prevent core dumps
+if ! grep -q "fs.suid_dumpable" /etc/sysctl.conf; then
+  echo "fs.suid_dumpable = 0" >> /etc/sysctl.conf
+  sysctl -w fs.suid_dumpable=0
+fi
+
+# Configure motd
+if ! grep -q "This system is for authorized users only" /etc/motd; then
+  cat >> /etc/motd <<EOL
+This system is for authorized users only. Individual use of this system and/or network without authority, or in excess of your authority, is strictly prohibited.
+EOL
+fi
+
+if ! grep -q "This system is for the use of authorized users only" /etc/issue; then
+  cat >> /
