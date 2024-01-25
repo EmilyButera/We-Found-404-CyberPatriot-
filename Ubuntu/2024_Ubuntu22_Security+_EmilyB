@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Ubuntu Security Script
-# Brian Strauch
 
 # Check if running as root
 if [ "$(id -u)" -ne 0 ]; then
