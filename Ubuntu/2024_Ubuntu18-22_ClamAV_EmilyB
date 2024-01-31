@@ -1,0 +1,3 @@
+#install the needed programs like rkhunter, tree, etc
+apt-get install rkhunter tree debsums libpam-cracklib chkrootkit clamav lynis -y > /dev/null 2>&1
+
