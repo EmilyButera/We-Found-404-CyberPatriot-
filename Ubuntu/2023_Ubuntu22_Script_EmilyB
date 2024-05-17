@@ -1,6 +1,12 @@
 #!/bin/bash
 
+LOG_FILE="/var/log/cyberpatriot.log"
+touch $LOG_FILE
+echo "CyberPatriot Script Started: $(date)" >> $LOG_FILE
+echo "This script must be run as root" >> $LOG_FILE
+
 #Remove prohibited files
+echo "removing prohibited software" >> $LOG_FILE
 sudo apt remove ophcrack
 sudo apt remove wireshark -y
 sudo apt-get autoremove -y
@@ -16,6 +22,7 @@ sudo apt remove rainbow-crack
 sudo apt remove ccleaner
 
 #Determines critical services
+echo "Determining critical services and removing useless ones" >> $LOG_FILE
 echo Does this machine need Samba?
 read sambaYN
 echo Does this machine need FTP?
@@ -39,30 +46,38 @@ read mediaFilesYN
 
 #Fun stuff (SHOULD WORK ON BOTH DEBIAN AND UBUNTU)
 clear
+echo "Cleared command prompt" >> $LOG_FILE
 unalias -a
+echo "deleted all aliases" >> $LOG_FILE
 printTime "All alias have been removed."
 
 clear
+echo "root account locked" >> $LOG_FILE
 usermod -L root
 printTime "Root account has been locked. Use 'usermod -U root' to unlock it."
 
 clear
+echo "Modified user privileges for bash history file" >> $LOG_FILE
 chmod 640 .bash_history
 printTime "Bash history file permissions set."
 
 clear
+echo "Modified user privileges for Shadow files" >> $LOG_FILE
 chmod 604 /etc/shadow
 printTime "Read/Write permissions on shadow have been set."
 
 clear
+echo "Checked for files and user folders not needed" >> $LOG_FILE
 printTime "Check for any user folders that do not belong to any users in /home/."
 ls -a /home/ >> ~/Desktop/Script.log
 
 clear
+echo "Checked for any files for users that should not be admins" >> $LOG_FILE
 printTime "Check for any files for users that should not be administrators in /etc/sudoers.d."
 ls -a /etc/sudoers.d >> ~/Desktop/Script.log
 
 #Configuring Sysctl
+echo "Configured Sysctl" >> $LOG_FILE
 clear
 cp /etc/sysctl.conf ~/Desktop/backups/
 echo > /etc/sysctl.conf
@@ -79,11 +94,13 @@ then
 	echo -e "\n\n# Disable IPv6\nnet.ipv6.conf.all.disable_ipv6 = 1\nnet.ipv6.conf.default.disable_ipv6 = 1\nnet.ipv6.conf.lo.disable_ipv6 = 1" >> /etc/sysctl.conf
 	sysctl -p >> /dev/null
 	printTime "IPv6 has been disabled."
+	echo "IPv6 disapled" >> $LOG_FILE
 fi
 
 
 
 #finding and removing backdoors
+echo "Fixed and removed backdoors" >> $LOG_FILE
 wget http://downloads.sourceforge.net/project/rkhunter/rkhunter/1.4.2/rkhunter-1.4.2.tar.gz
 tar xfz rkhunter-1.4.2.tar.gz
 sudo ./rkhunter-1.4.2/installer.sh --layout default --install
@@ -93,6 +110,7 @@ sudo /usr/local/bin/rkhunter --check
 
 
 #Check for prohibeted software, as well as stops prohibited software from running.
+echo "Checked for prohibited software" >> $LOG_FILE
 systemctl list-units --type=service --state=active
 sudo systemctl stop nginx 
 sudo systemcrl disable nginx
@@ -166,4 +184,3 @@ find /home -name '*.mp3' -type f -delete
  sudo apt update
  sudo apt upgrade
  sudo reboot
-
