@@ -1,0 +1,73 @@
+#!/bin/bash
+
+# Update system packages
+sudo apt-get update -y
+sudo apt-get upgrade -y
+
+# Install and configure firewall
+sudo apt-get install ufw -y
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+sudo ufw allow ssh
+sudo ufw enable
+
+# Install and configure fail2ban
+sudo apt-get install fail2ban -y
+sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
+sudo sed -i 's/#bantime  = 600/bantime  = 1800/' /etc/fail2ban/jail.local
+sudo sed -i 's/#findtime  = 600/findtime  = 1800/' /etc/fail2ban/jail.local
+sudo sed -i 's/#maxretry  = 3/maxretry  = 5/' /etc/fail2ban/jail.local
+sudo service fail2ban restart
+
+# Install and configure SSH guard
+sudo apt-get install sshguard -y
+sudo systemctl enable sshguard
+sudo systemctl start sshguard
+
+# Install and configure logwatch
+sudo apt-get install logwatch -y
+sudo sed -i 's/#Detail /Detail /' /etc/cron.daily/00logwatch
+sudo sed -i 's/#Set color on/Set color on/' /etc/cron.daily/00logwatch
+
+# Install and configure rkhunter
+sudo apt-get install rkhunter -y
+sudo systemctl enable rkhunter
+sudo systemctl start rkhunter
+
+# Install and configure chkrootkit
+sudo apt-get install chkrootkit -y
+sudo systemctl enable chkrootkit
+sudo systemctl start chkrootkit
+
+# Disable root login
+sudo sed -i 's/#PermitRootLogin yes/PermitRootLogin no/' /etc/ssh/sshd_config
+sudo systemctl restart ssh
+
+# Disable password login
+sudo sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
+sudo systemctl restart ssh
+
+# Set strong password policy
+sudo sed -i 's/#PasswordQualityControl yes/PasswordQualityControl yes/' /etc/security/pwquality.conf
+sudo sed -i 's/#minlen = 14/minlen = 16/' /etc/security/pwquality.conf
+sudo sed -i 's/#dcredit = 0/dcredit = 1/' /etc/security/pwquality.conf
+sudo sed -i 's/#ucredit = 0/ucredit = 1/' /etc/security/pwquality.conf
+sudo sed -i 's/#lcredit = 0/lcredit = 1/' /etc/security/pwquality.conf
+
+# Disable automatic login
+gsettings set org.gnome.desktop.session auto-save-session false
+gsettings set org.gnome.desktop.session automatic-login false
+
+# Disable guest account
+sudo sed -i 's/#AllowGuest=true/AllowGuest=false/' /etc/lightdm/lightdm.conf
+
+# Disable USB storage
+sudo sed -i 's/#usb-storage.quirks=0x1d6b:0x0003/usb-storage.quirks=0x1d6b:0x0003:u 0x1d6b:0x0002:u 0x1d6b:0x0001:u/' /etc/modprobe.d/blacklist.conf
+
+# Disable CD-ROM mounting
+sudo sed -i 's/#cdrom.autoc mount=0/cdrom.autoc mount=0/' /etc/modules
+
+# Disable IPv6
+sudo sed -i 's/#AddressFamily inet6/AddressFamily inet/' /etc/ssh/sshd_config
+sudo sed -i 's/#Protocol 2,1/Protocol 2/' /etc/ssh/sshd_config
+sudo sed
