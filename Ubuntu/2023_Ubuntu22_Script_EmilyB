@@ -174,7 +174,7 @@ echo "SSH Starts at boot" >> $LOG_FILE
 sudo systemctl stop httpd
 sudo service apache2 stop
 sudo systemctl stop nginx 
-sudo systemcrl disable nginx
+sudo systemctl disable nginx
 echo "Stopped httpd, apache2, nginx" >> $LOG_FILE
 
 echo "System updated and upgraded" >>$LOG_FILE
