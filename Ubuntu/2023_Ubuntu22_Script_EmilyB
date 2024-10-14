@@ -144,7 +144,7 @@ sudo ufw default deny incoming
 sudo ufw enable
 
 #allows services
-sudo ufw sudo ufw allow ssh
+sudo ufw allow ssh
 sudo ufw allow 4422/tcp
 
 #denies specific ports
