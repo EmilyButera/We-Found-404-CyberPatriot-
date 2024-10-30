@@ -20,6 +20,8 @@ find /home -name '*.mp3' -type f -delete
     	find /home -name '*.gif' -type f -delete
     	find /home -name '*.png' -type f -delete
     	find /home -name '*.jpg' -type f -delete
+		find /home -name '*.mp3' -type f -delete
+		find /home -name '*.tiff' -type f -delete
 
 #Remove prohibited Software
 echo "removing prohibited software" >> $LOG_FILE
@@ -176,6 +178,10 @@ sudo systemctl stop apache2
 sudo systemctl stop nginx 
 sudo systemctl disable nginx
 echo "Stopped httpd, apache2, nginx" >> $LOG_FILE
+
+#Disabling root login
+sudo sed -i 's/PermitRootLogin yes/PermitRootLogin no/g' /etc/ssh/sshd_config
+sudo sed -i 's/nullok/ /g' /etc/pam.d/common_auth
 
 echo "System updated and upgraded" >>$LOG_FILE
 #updates system
