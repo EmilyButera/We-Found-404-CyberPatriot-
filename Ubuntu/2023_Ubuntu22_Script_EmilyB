@@ -124,7 +124,6 @@ sudo /usr/local/bin/rkhunter --check
 
 #Check for prohibeted software, as well as stops prohibited software from running.
 echo "Checked for prohibited software" >> $LOG_FILE
-systemctl list-units --type=service --state=active
 sudo systemctl stop nginx 
 sudo systemctl disable nginx
 
